@@ -1,4 +1,8 @@
-# simulator 1.0.0
+# simcm 1.0.0
+
+`simcm.Simulate` is a context manager
+which is used
+to simulate responses from external resources.
 
 Use this tool to develop unit tests
 which obtain complete coverage.
