@@ -129,7 +129,6 @@ def test_my_app_google_500():
         with simulator.Simulate(
                 target_string='requests.request',
                 target_globals=dict(requests=requests),
-                response_class=MockedResponse,
                 response_list=[
                         requests.request,
                         MockedResponse(status_code=500, text='')]):
