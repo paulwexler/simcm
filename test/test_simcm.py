@@ -21,7 +21,6 @@ def test_simcm():
     with simcm.Simulate(
             target_string='requests.request',
             target_globals=dict(requests=requests),
-            response_class=MockResponse,
             response_list=[
                 requests.request,
                 MockResponse(status_code=500, text='')]):
@@ -41,7 +40,6 @@ def test_queue_not_empty():
         with simcm.Simulate(
                 target_string='requests.request',
                 target_globals=dict(requests=requests),
-                response_class=MockResponse,
                 response_list=[
                     requests.request,
                     MockResponse(status_code=500, text=''),
@@ -65,7 +63,6 @@ def test_empty_on_simulate():
         with simcm.Simulate(
                 target_string='requests.request',
                 target_globals=dict(requests=requests),
-                response_class=MockResponse,
                 response_list=[
                     requests.request]):
             response1 = requests.request(method='GET', url='https://pypi.org')
