@@ -82,7 +82,8 @@ Both exceptions are sub-classes of `SimulateError`.
 
 To change this behavior,
 sub-class `Simulate`, and overwrite these methods.
-If `queue_empty_on_simulate` returns, it should return a response.
+If `queue_empty_on_simulate` returns,
+it should return a callable or a response.
 
 ### EXAMPLE
 
