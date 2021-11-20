@@ -11,7 +11,6 @@ On `__exit__`, the target function is restored.
     with Simulate(
             target_string,
             target_globals,
-            response_class,
             response_list):
         test_the_application()
 
@@ -19,19 +18,18 @@ On `__exit__`, the target function is restored.
     The function to simulate, passed as a string.
 * **target_globals**:
     A dict used to resolve any global references in target_string.
-* **response_class**:
-    Instances of this class are returned.
 * **response_list**:
     The list of responses that `simulate` will return.
-    Each element of the list is either an instance of the
-    response_class, or a callable (typically the target,
-    passed as a function).
+    Each element of the list is either a callable (typically the target,
+    passed as a function) or a response.
 
 The elements of the response_list are put onto a FIFO queue.
 `simulate` reads the next element from the queue.
-If it is an instance of the response_class, it is returned.
-Otherwise it is called with all the arguments the application
-had passed to the target, and the result is returned.
+If the element is callable,
+it is called with all the arguments
+the application had passed to the target,
+and the result is returned;
+otherwise the element is returned.
 
 There are two events to consider.
 
@@ -61,7 +59,7 @@ If `queue_empty_on_simulate` returns, it should return a response.
 
 import asyncio
 
-__version__ = '1.0.0'
+__version__ = '2.0.0'
 
 
 class SimulateError(Exception):
@@ -88,11 +86,9 @@ class Simulate:
             self,
             target_string: str,
             target_globals: dict,
-            response_class,
             response_list: list = None):
         self.target_string = target_string
         self.target_globals = target_globals
-        self.response_class = response_class
         self.response_list = response_list
         self.queue = asyncio.Queue()
         self.original_target = None
@@ -162,13 +158,13 @@ class Simulate:
 
     def simulate(self, *args, **kwargs):
         """ Interpret the next response.
-        If it is an instance of the response_class, then return it;
-        otherwise call it.
+        If it is callable, call it, and return the result;
+        otherwise return it.
         """
         if self.queue.empty():
             response = self.queue_empty_on_simulate(*args, **kwargs)
         else:
             response = self.queue.get_nowait()
-        if not isinstance(response, self.response_class):
+        if callable(response):
             response = response(*args, **kwargs)
         return response
