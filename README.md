@@ -1,4 +1,4 @@
-# simcm 1.0.0
+# simcm 2.0.0
 
 `simcm.Simulate` is a context manager
 which is used
@@ -39,7 +39,6 @@ On `__exit__`, the target function is restored.
     with Simulate(
             target_string,
             target_globals,
-            response_class,
             response_list):
         test_the_application()
 
@@ -47,19 +46,18 @@ On `__exit__`, the target function is restored.
     The function to simulate, passed as a string.
 * **target_globals**:
     A dict used to resolve any global references in target_string.
-* **response_class**:
-    Instances of this class are returned.
 * **response_list**:
     The list of responses that `simulate` will return.
-    Each element of the list is either an instance of the
-    response_class, or a callable (typically the target,
-    passed as a function).
+    Each element of the list is either a callable (typically the target,
+    passed as a function) or a response.
 
 The elements of the response_list are put onto a FIFO queue.
 `simulate` reads the next element from the queue.
-If it is an instance of the response_class, it is returned.
-Otherwise it is called with all the arguments the application
-had passed to the target, and the result is returned.
+If the element is callable,
+it is called with all the arguments
+the application had passed to the target,
+and the result is returned;
+otherwise the element is returned.
 
 There are two events to consider.
 
@@ -170,7 +168,7 @@ def test_my_app_google_500():
      |      builtins.object
      |  
     class Simulate(builtins.object)
-     |  Simulate(target_string: str, target_globals: dict, response_class, response_list: list = None)
+     |  Simulate(target_string: str, target_globals: dict, response_list: list = None)
      |  
      |  Create a context which replaces the target callable
      |  with self.simulate.
@@ -186,7 +184,7 @@ def test_my_app_google_500():
      |      Restore target.
      |      Call queue_not_empty_on_exit if the queue is not empty.
      |  
-     |  __init__(self, target_string: str, target_globals: dict, response_class, response_list: list = None)
+     |  __init__(self, target_string: str, target_globals: dict, response_list: list = None)
      |      Initialize self.  See help(type(self)) for accurate signature.
      |  
      |  enqueue(self, response_list=None)
@@ -204,8 +202,8 @@ def test_my_app_google_500():
      |  
      |  simulate(self, *args, **kwargs)
      |      Interpret the next response.
-     |      If it is an instance of the response_class, then return it;
-     |      otherwise call it.
+     |      If it is callable, call it, and return the result;
+     |      otherwise return it.
      |  
      |  ----------------------------------------------------------------------
     class SimulateError(builtins.Exception)
