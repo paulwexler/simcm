@@ -1,32 +1,26 @@
 # simcm 2.0.0
 
 `simcm.Simulate` is a context manager
-which is used
-to simulate responses from external resources.
+which can simulate responses from external resources.
 
 Use this tool to develop unit tests
-which obtain complete coverage.
+which obtain complete coverage
+without using the external resource.
 
 While testing there is often
 a need to simulate the reponses of calls to external resources.
-For example, a GET request is sent to a url and
-the response status is expected to be among a set of values,
-and the body is expected to have a particular format.
-What if it is not?
-Perhaps there is code to handle this case.
-
-Suppose while trying to test the application,
-the external resource always returns the expected response; 
-how can the code that handles the unexpected case be tested?
+Perhaps the resource is not available in the test environment,
+or there is code which handles exceptional cases
+which cannot be triggered on demand.
 
 A good strategy is to implement subordinate methods
 so they can be tested in isolation.
 Even so, the context required to test a particular method
 may be difficult to arrange.
 
-In these cases, a simulator which simulates the unexpected response
+In these cases, a simulator which simulates the response
 is simpler to use because it lets the application run as is
-and handle the actual unexpected response.
+and handle the (supposedly) actual response.
 
 ### DESCRIPTION
 Simulate a series of calls to a function with a list of mocked
