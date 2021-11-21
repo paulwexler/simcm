@@ -110,7 +110,7 @@ def my_app():
 ```
 import pytest
 import requests
-import simulator
+import simcm
 
 import my_app
 
@@ -121,7 +121,7 @@ class MockedResponse:
 
 def test_my_app_google_500():
     with pytest.raises(RuntimeError) as exc: 
-        with simulator.Simulate(
+        with simcm.Simulate(
                 target_string='requests.request',
                 target_globals=dict(requests=requests),
                 response_class=MockedResponse,
