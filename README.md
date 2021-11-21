@@ -49,9 +49,9 @@ On `__exit__`, the target function is restored.
 * **response_list**:
     The list of responses that `simulate` will return.
     Each element of the list is either a callable (typically the target,
-    passed as a function) or a response.
+    passed as a function) or a mocked response.
 
-The elements of the response_list are put onto a FIFO queue.
+The elements of the `response_list` are put onto a FIFO queue.
 `simulate` reads the next element from the queue.
 If the element is callable,
 it is called with all the arguments
@@ -66,7 +66,7 @@ There are two events to consider.
    `queue_empty_on_simulate(*args, **kwargs)`
    is called.
    `queue_empty_on_simulate` raises `QueueEmptyError`.
-   As an aid in preparing the response_list,
+   As an aid in preparing the `response_list`,
    `args` and `kwargs` are included in the exception message.
 
 2. `__exit__` is called, but elements remain in the queue.
@@ -74,7 +74,7 @@ There are two events to consider.
    `queue_not_empty_on_exit(exception_type, exception_value, traceback)`
    is called.
    `queue_not_empty_on_exit` raises `QueueNotEmptyError`.
-   As an aid in preparing the response_list,
+   As an aid in preparing the `response_list`,
    the number of elements remaining in the queue
    is included in the exception message.
 
@@ -83,7 +83,7 @@ Both exceptions are sub-classes of `SimulateError`.
 To change this behavior,
 sub-class `Simulate`, and overwrite these methods.
 If `queue_empty_on_simulate` returns,
-it should return a callable or a response.
+it should return a callable or a mocked response.
 
 ### EXAMPLE
 
@@ -130,6 +130,7 @@ def test_my_app_google_500():
         with simulator.Simulate(
                 target_string='requests.request',
                 target_globals=dict(requests=requests),
+                response_class=MockedResponse,
                 response_list=[
                         requests.request,
                         MockedResponse(status_code=500, text='')]):
