@@ -1,4 +1,4 @@
-# simcm 2.0.0
+# simcm 2.0.1
 
 `simcm.Simulate` is a context manager
 which can simulate responses from external resources.

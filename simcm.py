@@ -60,7 +60,7 @@ it should return a callable or a mocked response.
 
 import asyncio
 
-__version__ = '2.0.0'
+__version__ = '2.0.1'
 
 
 class SimulateError(Exception):
